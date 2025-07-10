@@ -1,0 +1,8 @@
+features/
+└── bank-account/
+     ├── components/
+     │    └── bank-account.component.ts
+     ├── services/
+     │    └── bank-account.service.ts
+     ├── pages/         (optional if you want full-page features)
+     └── bank-account.module.ts
