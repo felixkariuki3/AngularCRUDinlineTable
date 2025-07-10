@@ -9,6 +9,8 @@ import { BankAccountService } from '../shared/bank-account.service';
 import { catchError } from 'rxjs';
 
 
+
+
 @Component({
   selector: 'app-bank-account',
   standalone: true,
@@ -19,7 +21,7 @@ import { catchError } from 'rxjs';
 export class BankAccountComponent {
   bankAccountsForm: FormGroup;
   bankList: BankModel[] = [];
-  notification = { class: '', message: '' };
+  notification :{ class:string, message: string }| null = null;
 
   constructor(private fb: FormBuilder, 
     private bank : Bank,
@@ -62,6 +64,7 @@ export class BankAccountComponent {
   get accounts(): FormArray {
     return this.bankAccountsForm.get('accounts') as FormArray;
   }
+  //Retrieves a specific Formgroup by index
   getAccountFormGroup(index: number): FormGroup {
   return this.accounts.at(index) as FormGroup;
 }
@@ -84,38 +87,48 @@ export class BankAccountComponent {
 
 //Posts and updates an account to the API
   recordSubmit(fg:FormGroup){
-    console.log('Form submitted:', fg.value); 
-    if (fg.value.bankAccountID==0)
+    const id= Number(fg.value.bankAccountID)
+    console.log('Form submitted:', fg.value);
+
+    if (!id || id === 0)
     this.service.postBankAccount(fg.value).subscribe(
      (res: any) => {
       console.log('API response:', res);
       //Patch the response from the API back to the bankAccountID
-      fg.patchValue({bankAccountID: res.bankAccountID});
-      console.log('Server response:', res);})
+      fg.patchValue({bankAccountID: res.bankAccountId});
+      console.log('Server response:', res);
+      this.showNotifications('insert');
+    })
+      
     else 
-    //Updates
+    //Updates an existing record
        this.service.putBankAccount(fg.value).subscribe(
      (res: any) => {
-  
+      
+    this.showNotifications('update');
     });
   }
   //Deletes an account and Removes the row from the form
  onDelete(fg: FormGroup, i: number) {
   const id = fg.get('bankAccountID')!.value as number;
    console.log('Attempting delete for ID:', id, 'at index', i);
-  if (id>0) {
+   //Makes sure that the ID exist before calling the API especially when the response is delayed.
+  if (id && id > 0) {
     (confirm('Are you sure you want delete?'))
     this.service.deleteBankAccount(id).subscribe({
       next: () => {
         console.log('Server delete succeeded for ID:', id);
-        this.accounts.removeAt(i);}})}
+        //Remove the line from the Form
+        this.accounts.removeAt(i);
+        this.showNotifications('delete');
+      }})}
 
     else {
   // new row → just remove locally
-   
     console.log('Removing new, unsaved row at index', i);
     this.accounts.removeAt(i);}
   }
+  //Define the notifications for the above CRUD operations
   showNotifications(category:string){
     switch (category){
       case 'insert':
@@ -131,6 +144,9 @@ export class BankAccountComponent {
       default:
       break;
     }
+    setTimeout(() => {
+      this.notification =null;
+    }, 3000);
   }
    
 }

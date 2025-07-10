@@ -13,7 +13,7 @@ export class BankAccountService {
       return this.http.post(environment.apiUrl+'/BankAccount',formData)
     }
     putBankAccount(formData :any){
-      return this.http.put(environment.apiUrl+'/BankAccount'+formData.bankAccountID,formData)
+      return this.http.put(environment.apiUrl+'/BankAccount/'+formData.bankAccountID,formData)
     }
     deleteBankAccount(id: number){
       return this.http.delete(environment.apiUrl+'/BankAccount/'+id);
