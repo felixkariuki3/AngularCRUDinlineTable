@@ -122,10 +122,10 @@ export class BankAccountComponent {
         this.notification ={class:'text-success', message:'Saved'}
       break;
       case 'update':
-        this.notification ={class:'text-success', message:'Updated'}
+        this.notification ={class:'text-primary', message:'Updated'}
       break;
       case 'delete':
-        this.notification ={class:'text-success', message:'Deleted'}
+        this.notification ={class:'text-danger', message:'Deleted'}
       break;
 
       default:
