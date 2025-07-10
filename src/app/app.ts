@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { BankAccountComponent } from './bank-account/bank-account';
+import { BankAccountComponent } from './bank-account/bank-account.component';
 import { provideHttpClient } from '@angular/common/http'
 
 
